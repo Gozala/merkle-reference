@@ -1,6 +1,6 @@
 /**
  * @param {unknown} data
- * @returnsp
+ * @returns {boolean}
  */
 export const isReference = (data) => {
   return data instanceof Reference
@@ -8,7 +8,6 @@ export const isReference = (data) => {
 
 class Reference {
   /**
-   *
    * @param {Uint8Array} bytes
    */
   constructor(bytes) {
