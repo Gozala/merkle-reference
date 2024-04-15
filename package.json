@@ -1,0 +1,50 @@
+{
+  "name": "merkle-reference",
+  "version": "0.0.1",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "build": "tsc --build",
+    "prepublishOnly": "tsc --build",
+    "test:web": "playwright-test --runner entail 'test/**/*.spec.js'",
+    "test:node": "c8 entail 'test/*.spec.js'",
+    "test": "npm run test:node && npm run test:web",
+    "coverage": "c8 --reporter=html mocha test/**/*.spec.js && npm_config_yes=true npx st -d coverage -p 8080",
+    "check": "tsc --build"
+  },
+  "keywords": [
+    "merkle",
+    "reference",
+    "hash",
+    "data",
+    "ipld"
+  ],
+  "files": [
+    "src",
+    "dist/src"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/src/lib.d.ts",
+      "import": "./src/lib.js",
+      "default": "./src/lib.js"
+    }
+  },
+  "dependencies": {
+    "@noble/hashes": "1.3.3",
+    "multiformats": "^13.0.0"
+  },
+  "devDependencies": {
+    "c8": "^9.1.0",
+    "entail": "^2.1.2",
+    "playwright-test": "^14.1.1",
+    "prettier": "^3.2.5",
+    "typescript": "^5.4.3"
+  },
+  "prettier": {
+    "trailingComma": "es5",
+    "tabWidth": 2,
+    "semi": false,
+    "singleQuote": true
+  }
+}
