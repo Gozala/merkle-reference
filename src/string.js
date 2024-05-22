@@ -4,6 +4,10 @@ export const name = 'String'
 export const tag = 'merkle-structure:string/utf-8'
 
 /**
+ * @param {unknown} value
+ */
+export const toString = (value) => String(value)
+/**
  * @param {string} text
  */
 export const toUTF8 = (text) => utf8.encoder.encode(text)

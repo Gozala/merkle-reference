@@ -40,7 +40,7 @@ export const infer = (data) => {
       }
     }
     default: {
-      throw new TypeError(`Unknown type ${data}`)
+      throw new TypeError(`Unknown type ${String.toString(data)}`)
     }
   }
 }

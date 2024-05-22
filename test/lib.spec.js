@@ -6,6 +6,11 @@ const fixtures = [
   [true, 'bd5gsrluwlf2unzhgd3jidzhmwclpyohd3ccm7yqqhc4tn6fejmaa'],
   [false, 'bl6afhktctiibopldpshfthiitlivdkvox6x4rwqakj5ubhz33gca'],
   [1985, 'b4ob7njt6ngtc7723fryqym6uemvyvvfntjwphglwe3ytglbwhx4q'],
+  [1985n, 'b4ob7njt6ngtc7723fryqym6uemvyvvfntjwphglwe3ytglbwhx4q'],
+  [0, 'bcujtdlzjfv36ywvw65hgcsfdhknl3oix4dawsacajka3xxlixdbq'],
+  [0n, 'bcujtdlzjfv36ywvw65hgcsfdhknl3oix4dawsacajka3xxlixdbq'],
+  [-17, 'b3xqp6x4cxkwzwcebyerbxmizxhjh6hwbcga3etewecndltwwusta'],
+  [-17n, 'b3xqp6x4cxkwzwcebyerbxmizxhjh6hwbcga3etewecndltwwusta'],
   [18.033, 'bmjrgvd75uynefn3hljzkl2lg4xqthymoqolc22qwtxl2crew27fa'],
   ['', 'bpedmjxitfak5zao5jiabw4ngew6bi3mv4y2fh5li2tdaisujt2ma'],
   ['hello world', 'b2ip5bcmbwyfmckglvjbttorkwz4seqyqpyq425g6iyvyf2d6v2tq'],
@@ -51,4 +56,13 @@ export const testLib = {
       },
     ])
   ),
+}
+
+/**
+ * @type {import('entail').Suite}
+ */
+export const testError = {
+  'throws on symbols': (assert) => {
+    assert.throws(() => Lib.id(Symbol.for('hello')), /Unknown type/)
+  },
 }
