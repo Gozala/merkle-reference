@@ -1,6 +1,7 @@
 import { toTag } from './string.js'
 import { compare } from './bytes.js'
 import { compile } from './lib.js'
+import * as String from './string.js'
 
 export const name = 'Map'
 export const tag = 'merkle-structure:map/k+v/ref-tree'
@@ -26,13 +27,19 @@ export function* entries(data) {
  */
 export const attributes = (data, toTree) => {
   const attributes = []
-  for (const [key, value] of entries(data)) {
-    attributes.push([toTree(key), toTree(value)])
+  for (const [name, value] of entries(data)) {
+    const key = toTree(name)
+    const order = typeof name === 'string' ? String.toUTF8(name) : compile(key)
+    attributes.push({
+      order: order,
+      key,
+      value: toTree(value),
+    })
   }
 
-  return attributes.sort((left, right) =>
-    compare(compile(left), compile(right))
-  )
+  return attributes
+    .sort((left, right) => compare(left.order, right.order))
+    .map(({ key, value }) => [key, value])
 }
 
 /**
