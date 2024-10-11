@@ -74,6 +74,12 @@ export const testLib = {
       },
     ])
   ),
+
+  'test tree reuse': (assert) => {
+    const tree = Lib.refer({ x: 1 })
+
+    assert.equal(Lib.id({ tree }), Lib.id({ tree: { x: 1 } }))
+  },
 }
 
 /**

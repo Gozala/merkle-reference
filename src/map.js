@@ -1,10 +1,10 @@
-import { toTag } from './string.js'
+import * as Tag from './tag.js'
 import { compare } from './bytes.js'
-import { compile } from './lib.js'
 import * as String from './string.js'
+import * as Tree from './tree.js'
 
 export const name = 'Map'
-export const tag = 'merkle-structure:map/k+v/ref-tree'
+export const tag = Tag.for('merkle-structure:map/k+v/ref-tree')
 
 /**
  * @param {object} data
@@ -23,13 +23,14 @@ export function* entries(data) {
 
 /**
  * @param {object} data
- * @param {(value: unknown) => import('./lib.js').Node} toTree
+ * @param {(value: unknown) => Tree.Node} toTree
  */
 export const attributes = (data, toTree) => {
   const attributes = []
   for (const [name, value] of entries(data)) {
     const key = toTree(name)
-    const order = typeof name === 'string' ? String.toUTF8(name) : compile(key)
+    const order =
+      typeof name === 'string' ? String.toUTF8(name) : Tree.digest(key)
     attributes.push({
       order: order,
       key,
@@ -44,8 +45,8 @@ export const attributes = (data, toTree) => {
 
 /**
  * @param {Map<unknown, unknown>} data
- * @param {(value: unknown) => import('./lib.js').Node} toTree
+ * @param {(value: unknown) => Tree.Node} toTree
  */
 export const toTree = (data, toTree) => {
-  return [toTag(tag), attributes(data, toTree)]
+  return [tag, attributes(data, toTree)]
 }

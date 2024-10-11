@@ -1,6 +1,6 @@
-import { toTag } from './string.js'
-export const name = 'Bytes'
-export const tag = 'merkle-structure:bytes/raw'
+import * as Tag from './tag.js'
+
+export const tag = Tag.for('merkle-structure:bytes/raw')
 
 /**
  * @param {Uint8Array} value
@@ -46,4 +46,4 @@ export const compare = (self, other) => {
 /**
  * @param {Uint8Array} value
  */
-export const toTree = (value) => [toTag(tag), toBytes(value)]
+export const toTree = (value) => [tag, toBytes(value)]

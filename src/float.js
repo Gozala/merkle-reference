@@ -1,9 +1,8 @@
-import { toTag } from './string.js'
+import * as Tag from './tag.js'
 
 const memory = new Float64Array(1)
 
-export const name = 'Float'
-export const tag = 'merkle-structure:float/double-precision'
+export const tag = Tag.for('merkle-structure:float/double-precision')
 
 /**
  * @param {number} value
@@ -23,4 +22,4 @@ export const doublePrecisionFloat = (value) => {
 /**
  * @param {number} value
  */
-export const toTree = (value) => [toTag(tag), toBytes(value)]
+export const toTree = (value) => [tag, toBytes(value)]

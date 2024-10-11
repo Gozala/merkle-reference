@@ -1,7 +1,7 @@
-import { toTag } from './string.js'
+import * as Tag from './tag.js'
 
 export const name = 'List'
-export const tag = 'merkle-structure:list/item/ref-tree'
+export const tag = Tag.for('merkle-structure:list/item/ref-tree')
 
 /**
  * @param {Set<unknown>} data
@@ -13,5 +13,5 @@ export const toTree = (data, toTree) => {
     members.push(toTree(element))
   }
 
-  return [toTag(tag), members]
+  return [tag, members]
 }
