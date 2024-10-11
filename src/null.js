@@ -1,6 +1,6 @@
-import { toTag } from './string.js'
+import * as Tag from './tag.js'
 export const name = 'Null'
-export const tag = 'merkle-structure:null'
+export const tag = Tag.for('merkle-structure:null')
 
 const memory = new Uint8Array(0)
 
@@ -13,4 +13,4 @@ export const toBytes = (_) => memory
 /**
  * @param {null} value
  */
-export const toTree = (value) => [toTag(tag), toBytes(value)]
+export const toTree = (value) => [tag, toBytes(value)]

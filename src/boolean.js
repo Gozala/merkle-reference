@@ -1,9 +1,9 @@
-import { toTag } from './string.js'
-export const name = 'Boolean'
-export const tag = 'merkle-structure:boolean/byte'
+import * as Tag from './tag.js'
 
 const True = new Uint8Array([1])
 const False = new Uint8Array([0])
+
+export const tag = Tag.for('merkle-structure:boolean/byte')
 
 /**
  * @param {boolean} value
@@ -13,4 +13,4 @@ export const toBytes = (value) => (value ? True : False)
 /**
  * @param {boolean} value
  */
-export const toTree = (value) => [toTag(tag), toBytes(value)]
+export const toTree = (value) => [tag, toBytes(value)]

@@ -1,5 +1,5 @@
-import { toTag } from './string.js'
-export const tag = 'merkle-structure:integer/leb128'
+import * as Tag from './tag.js'
+export const tag = Tag.for('merkle-structure:integer/leb128')
 export const name = 'Integer'
 
 /**
@@ -33,4 +33,4 @@ export const leb128 = (value) => {
 /**
  * @param {bigint|number} value
  */
-export const toTree = (value) => [toTag(tag), toBytes(value)]
+export const toTree = (value) => [tag, toBytes(value)]
