@@ -24,7 +24,7 @@ export const digest = (tree, hash = sha256) => {
   } else {
     const leaves = []
     for (const node of tree) {
-      if (node.BYTES_PER_ELEMENT === 1) {
+      if (Bytes.is(node)) {
         leaves.push(node)
       } else {
         leaves.push(digest(node, hash))

@@ -24,7 +24,7 @@ export const infer = (data) => {
     case 'object': {
       if (data === null) {
         return Null
-      } else if (data instanceof Uint8Array) {
+      } else if (Bytes.is(data)) {
         return Bytes
       } else if (Array.isArray(data)) {
         return List
