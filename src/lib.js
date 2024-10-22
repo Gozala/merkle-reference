@@ -9,7 +9,17 @@ import * as Reference from './reference.js'
 import * as Type from './type.js'
 import * as Tree from './tree.js'
 
-export { sha256, base32, Null, String, Boolean, Integer, Float, Tree }
+export {
+  sha256,
+  base32,
+  Null,
+  String,
+  Boolean,
+  Integer,
+  Float,
+  Tree,
+  Reference,
+}
 
 /**
  *
