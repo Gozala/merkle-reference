@@ -77,8 +77,145 @@ export const testLib = {
 
   'test tree reuse': (assert) => {
     const tree = Lib.refer({ x: 1 })
+    const expect = Lib.id({ tree: { x: 1 } })
 
-    assert.equal(Lib.id({ tree }), Lib.id({ tree: { x: 1 } }))
+    assert.equal(Lib.id({ tree }), expect)
+  },
+}
+
+/**
+ * @type {import('entail').Suite}
+ */
+
+export const testReference = {
+  'test toJSON': (assert) => {
+    const json = Lib.refer({ x: 1 }).toJSON()
+    assert.deepEqual(json, {
+      '/': 'baedreif6sj7tptakcl34mhf2jbk6nlnthdewlsmhksazqrltcth7ouzspu',
+    })
+  },
+
+  'test toString': (assert) => {
+    assert.deepEqual(
+      Lib.refer({ x: 1 }).toString(),
+      'ba4jcbpusp434ycqs67dbzosikxtk3mzyzfs4tb2uqgmek4yuz73vgmt5'
+    )
+  },
+
+  'test assert multihash': (assert) => {
+    assert.deepEqual(Lib.refer({ x: 1 }).multihash, {
+      code: 18,
+      length: 32,
+      digest: new Uint8Array([
+        190, 146, 127, 55, 204, 10, 18, 247, 198, 28, 186, 72, 85, 230, 173,
+        179, 56, 201, 101, 201, 135, 84, 129, 152, 69, 115, 20, 207, 247, 83,
+        50, 125,
+      ]),
+    })
+  },
+
+  'test assert CID version': (assert) => {
+    assert.deepEqual(Lib.refer({ x: 1 }).version, 1)
+  },
+
+  'test assert IPLD codec code': (assert) => {
+    assert.deepEqual(Lib.refer({ x: 1 }).code, 0x07)
+  },
+
+  'test assert toStringTag': (assert) => {
+    assert.deepEqual(
+      Lib.refer({ x: 1 })[Symbol.toStringTag],
+      '#ba4jcbpusp434ycqs67dbzosikxtk3mzyzfs4tb2uqgmek4yuz73vgmt5'
+    )
+  },
+
+  'test assert node inspect': (assert) => {
+    assert.deepEqual(
+      // @ts-expect-error
+      Lib.refer({ x: 1 })[Symbol.for('nodejs.util.inspect.custom')](),
+      '#ba4jcbpusp434ycqs67dbzosikxtk3mzyzfs4tb2uqgmek4yuz73vgmt5'
+    )
+  },
+  fromString: (assert) => {
+    const hello = Lib.refer('hello')
+    assert.deepEqual(Lib.fromString(hello.toString()), hello)
+  },
+  invalidStringReference: (assert) => {
+    const hello = Lib.refer('hello')
+    assert.throws(() => Lib.fromString('world'), /ReferenceError/)
+    assert.throws(
+      () => Lib.fromString(hello.toString().slice(0, -1)),
+      /ReferenceError/
+    )
+
+    assert.throws(
+      () => Lib.fromString(Lib.base32.encode(hello['/'].subarray(1, -1))),
+      /ReferenceError/
+    )
+
+    const implicit = Lib.fromString('hello', hello)
+    assert.deepEqual(implicit, hello)
+  },
+
+  'invalid fromDigest': (assert) => {
+    const hello = Lib.refer({ hello: 'world' })
+    assert.deepEqual(Lib.fromDigest(Lib.toDigest(hello)), hello)
+    assert.throws(
+      () => Lib.fromDigest(Lib.toDigest(hello).subarray(1)),
+      /RangeError/
+    )
+  },
+  'fromString with invalid (size) source': (assert) => {
+    const hello = Lib.refer('hello')
+
+    assert.throws(
+      () => Lib.fromString(Lib.base32.encode(hello['/'])),
+      /ReferenceError/
+    )
+  },
+  'fromBytes unsupported hash algorithm': (assert) => {
+    const hello = Lib.refer('hello')
+    const bytes = Lib.toBytes(hello).slice()
+    bytes[1] += 1
+
+    assert.throws(() => Lib.fromBytes(bytes), /ReferenceError/)
+  },
+
+  'fromBytes unsupported hash size': (assert) => {
+    const hello = Lib.refer('hello')
+    const bytes = Lib.toBytes(hello).slice()
+    bytes[2] += 1
+
+    assert.throws(() => Lib.fromBytes(bytes), /ReferenceError/)
+  },
+
+  'bytes compare': (assert) => {
+    assert.equal(Lib.Bytes.compare(new Uint8Array(), new Uint8Array()), 0)
+    assert.equal(
+      Lib.Bytes.compare(new Uint8Array([1, 2]), new Uint8Array([1, 1])),
+      1
+    )
+    assert.equal(
+      Lib.Bytes.compare(new Uint8Array([1, 2]), new Uint8Array([1])),
+      1
+    )
+    assert.equal(
+      Lib.Bytes.compare(new Uint8Array([1, 2]), new Uint8Array([1, 3])),
+      -1
+    )
+
+    assert.equal(
+      Lib.Bytes.compare(new Uint8Array([1, 2]), new Uint8Array([1, 2, 3])),
+      -1
+    )
+
+    assert.equal(
+      Lib.Bytes.compare(
+        new Uint8Array([1, 2]),
+        new Uint8Array([1, 2, 3]).subarray(0, 2)
+      ),
+      0
+    )
   },
 }
 

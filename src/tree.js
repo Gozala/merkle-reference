@@ -4,6 +4,8 @@ import * as Bytes from './bytes.js'
 import * as Null from './null.js'
 import * as Reference from './reference.js'
 
+export { sha256 }
+
 /**
  * @typedef {Uint8Array} Leaf
  * @typedef {Array<Leaf|Node>} Branch
@@ -20,7 +22,7 @@ export const digest = (tree, hash = sha256) => {
   if (Tag.is(tree)) {
     return hash(Tag.toBytes(tree))
   } else if (Reference.is(tree)) {
-    return Reference.digest(tree)
+    return Reference.toDigest(tree)
   } else {
     const leaves = []
     for (const node of tree) {
