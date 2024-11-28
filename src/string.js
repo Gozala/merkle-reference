@@ -1,31 +1,19 @@
-const utf8 = { encoder: new TextEncoder(), decoder: new TextDecoder() }
+import * as Tag from './tag.js'
+import { toUTF8, fromUTF8 } from './utf8.js'
 
 export const name = 'String'
-export const tag = 'merkle-structure:string/utf-8'
+export const tag = Tag.for('merkle-structure:string/utf-8')
+
+export { fromUTF8, toUTF8 }
 
 /**
  * @param {unknown} value
  */
 export const toString = (value) => String(value)
-/**
- * @param {string} text
- */
-export const toUTF8 = (text) => utf8.encoder.encode(text)
-
-/**
- * @param {Uint8Array} bytes
- */
-export const fromUTF8 = (bytes) => utf8.decoder.decode(bytes)
 
 export const toBytes = toUTF8
-
-const TAG = new Uint8Array([])
-/**
- * @param {string} name
- */
-export const toTag = (name) => [TAG, toUTF8(name)]
 
 /**
  * @param {string} value
  */
-export const toTree = (value) => [toTag(tag), toBytes(value)]
+export const toTree = (value) => [tag, toBytes(value)]

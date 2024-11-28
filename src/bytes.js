@@ -1,6 +1,17 @@
-import { toTag } from './string.js'
-export const name = 'Bytes'
-export const tag = 'merkle-structure:bytes/raw'
+import * as Tag from './tag.js'
+
+export const tag = Tag.for('merkle-structure:bytes/raw')
+
+/**
+ * @param {unknown} source
+ * @returns {source is Uint8Array}
+ */
+export const is = (source) =>
+  source instanceof Uint8Array ||
+  // ⚠️ `instanceof Uint8Array` is false in vitest and possibly other
+  // environments that use jsdom, so we resort to this workaround.
+  // @see https://github.com/vitest-dev/vitest/issues/4043
+  (Array.isArray(source) && /** @type {any} */ (source).BYTES_PER_ELEMENT === 1)
 
 /**
  * @param {Uint8Array} value
@@ -46,4 +57,4 @@ export const compare = (self, other) => {
 /**
  * @param {Uint8Array} value
  */
-export const toTree = (value) => [toTag(tag), toBytes(value)]
+export const toTree = (value) => [tag, toBytes(value)]
