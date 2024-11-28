@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0](https://github.com/Gozala/merkle-reference/compare/v1.0.1...v1.0.0) (2024-11-28)
+
+
+### Miscellaneous Chores
+
+* release 1.0.0 ([6b6ead9](https://github.com/Gozala/merkle-reference/commit/6b6ead95f4fe9fd0c9fcbfe9a462198b87deab51))
+
 ## [1.0.1](https://github.com/Gozala/merkle-reference/compare/v1.0.0...v1.0.1) (2024-11-28)
 
 
