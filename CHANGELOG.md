@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.1.0](https://github.com/Gozala/merkle-reference/compare/v1.0.0...v1.1.0) (2024-11-29)
+
+
+### Bug Fixes
+
+* lockfile ([33df45a](https://github.com/Gozala/merkle-reference/commit/33df45a962be403801569283ef2a4c07033f69c9))
+
+
+### Miscellaneous Chores
+
+* release 1.0.0 ([6b6ead9](https://github.com/Gozala/merkle-reference/commit/6b6ead95f4fe9fd0c9fcbfe9a462198b87deab51))
+* release 1.1.0 ([2574a11](https://github.com/Gozala/merkle-reference/commit/2574a1157a4ec3a41bfbc68d80c545a2689eec61))
+
 ## [1.0.0](https://github.com/Gozala/merkle-reference/compare/v1.0.1...v1.0.0) (2024-11-28)
 
 
