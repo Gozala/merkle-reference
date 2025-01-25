@@ -95,6 +95,12 @@ export const testReference = {
     })
   },
 
+  'toJSON and fromJSON roundtrips': (assert) => {
+    const point = Lib.refer({ x: 1, y: 5 })
+
+    assert.deepEqual(point, Lib.fromJSON(Lib.toJSON(point)))
+  },
+
   'test toString': (assert) => {
     assert.deepEqual(
       Lib.refer({ x: 1 }).toString(),

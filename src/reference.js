@@ -90,7 +90,7 @@ class Reference {
   }
 
   toJSON() {
-    return { '/': base32.encode(this.bytes) }
+    return toJSON(this)
   }
 
   get [Symbol.toStringTag]() {
@@ -196,3 +196,14 @@ export const toDigest = (reference) => reference['/'].subarray(PREFIX.length)
  * @returns
  */
 export const toBytes = (reference) => reference['/'].subarray(1)
+
+/**
+ * @param {import('./lib.js').Reference} reference
+ */
+export const toJSON = (reference) => ({ '/': base32.encode(reference['/']) })
+
+/**
+ * @param {{'/': string}} json
+ */
+export const fromJSON = (json) =>
+  fromBytes(base32.decode(json['/']).subarray(1))
