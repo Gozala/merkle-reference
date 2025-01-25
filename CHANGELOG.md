@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.0.0](https://github.com/Gozala/merkle-reference/compare/v1.1.0...v2.0.0) (2025-01-25)
+
+
+### ⚠ BREAKING CHANGES
+
+* implement fromJSON method ([#8](https://github.com/Gozala/merkle-reference/issues/8))
+* implement fromJSON method
+
+### Features
+
+* implement fromJSON method ([9c3a274](https://github.com/Gozala/merkle-reference/commit/9c3a274eca5c2da5e2417fdb9871903736faa64b))
+* implement fromJSON method ([#8](https://github.com/Gozala/merkle-reference/issues/8)) ([a864b64](https://github.com/Gozala/merkle-reference/commit/a864b64ebd2eb8faedbbf9d1e0f7e1c4ad278c99))
+
+
+### Bug Fixes
+
+* ts errors ([c685830](https://github.com/Gozala/merkle-reference/commit/c68583051bf54ed17f14365207479f7c521c1fdb))
+
 ## [1.1.0](https://github.com/Gozala/merkle-reference/compare/v1.0.0...v1.1.0) (2024-11-29)
 
 
