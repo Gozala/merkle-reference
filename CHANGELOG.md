@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.0.1](https://github.com/Gozala/merkle-reference/compare/v2.0.0...v2.0.1) (2025-01-26)
+
+
+### Bug Fixes
+
+* types ([e407925](https://github.com/Gozala/merkle-reference/commit/e407925c33183a7132297d112a95d55235985371))
+* types ([#10](https://github.com/Gozala/merkle-reference/issues/10)) ([7322057](https://github.com/Gozala/merkle-reference/commit/73220579f5e70bf6e4f946eec27b1eb6b6c8a003))
+
 ## [2.0.0](https://github.com/Gozala/merkle-reference/compare/v1.1.0...v2.0.0) (2025-01-25)
 
 
