@@ -25,6 +25,7 @@ export const toTree = (data) => {
 
 /**
  * @param {unknown} value
+ * @param {Tree.Hash} [hash]
  * @returns {string}
  */
 export const id = (value, hash = sha256) =>
@@ -44,7 +45,6 @@ const MARKER = Symbol('Marker')
 /**
  * @template {{}|null} [T={}|null]
  * @typedef {{
- *  toJSON(): { '/': string }
  *  readonly ['/']: Uint8Array
  *  readonly [MARKER]?: T
  * }} Reference
