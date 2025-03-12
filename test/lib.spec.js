@@ -217,6 +217,13 @@ export const testReference = {
       0
     )
   },
+
+  'test cache': (assert) => {
+    const object = { hello: 'world' }
+
+    assert.equal(Lib.id(object), Lib.id(object))
+    assert.equal(Lib.refer(object), Lib.refer(object))
+  },
 }
 
 /**
