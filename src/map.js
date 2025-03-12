@@ -23,18 +23,18 @@ export function* entries(data) {
 
 /**
  * @param {object} data
- * @param {(value: unknown) => Tree.Node} toTree
+ * @param {Tree.Builder} builder
  */
-export const attributes = (data, toTree) => {
+export const attributes = (data, builder) => {
   const attributes = []
   for (const [name, value] of entries(data)) {
-    const key = toTree(name)
+    const key = builder.toTree(name)
     const order =
-      typeof name === 'string' ? String.toUTF8(name) : Tree.digest(key)
+      typeof name === 'string' ? String.toUTF8(name) : builder.digest(key)
     attributes.push({
       order: order,
       key,
-      value: toTree(value),
+      value: builder.toTree(value),
     })
   }
 
@@ -45,8 +45,8 @@ export const attributes = (data, toTree) => {
 
 /**
  * @param {Map<unknown, unknown>} data
- * @param {(value: unknown) => Tree.Node} toTree
+ * @param {Tree.Builder} builder
  */
-export const toTree = (data, toTree) => {
-  return [tag, attributes(data, toTree)]
+export const toTree = (data, builder) => {
+  return [tag, attributes(data, builder)]
 }

@@ -5,12 +5,12 @@ export const tag = Tag.for('merkle-structure:list/item/ref-tree')
 
 /**
  * @param {Set<unknown>} data
- * @param {(value: unknown) => unknown[]} toTree
+ * @param {import('./tree.js').Builder} builder
  */
-export const toTree = (data, toTree) => {
+export const toTree = (data, builder) => {
   const members = []
   for (const element of data) {
-    members.push(toTree(element))
+    members.push(builder.toTree(element))
   }
 
   return [tag, members]

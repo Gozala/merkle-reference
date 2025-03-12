@@ -55,6 +55,9 @@ class Reference {
   #multihash
   #bytes
 
+  /** @type {WeakMap<Uint8Array, Reference<unknown>>} */
+  static cache = new WeakMap()
+
   /**
    * @param {Uint8Array} digest
    * @param {T} [of]
@@ -125,10 +128,15 @@ export const is = (source) => {
  * @param {Uint8Array} digest
  */
 export const fromDigest = (digest) => {
-  if (digest.length !== DIGEST_SIZE) {
+  const reference = Reference.cache.get(digest)
+  if (reference) {
+    return reference
+  } else if (digest.length !== DIGEST_SIZE) {
     throw new RangeError(`Invalid digest size ${digest.length}`)
   } else {
-    return new Reference(digest)
+    const reference = new Reference(digest)
+    Reference.cache.set(digest, reference)
+    return reference
   }
 }
 

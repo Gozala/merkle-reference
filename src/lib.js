@@ -5,40 +5,29 @@ import * as Integer from './integer.js'
 import * as Float from './float.js'
 import * as Reference from './reference.js'
 import * as Bytes from './bytes.js'
-import * as Type from './type.js'
 import * as Tree from './tree.js'
 import { sha256 } from './tree.js'
 
 export * from './reference.js'
 export { Null, String, Boolean, Integer, Float, Bytes, Tree, sha256 }
 
-/**
- *
- * @param {unknown} data
- * @returns {Tree.Node}
- */
-export const toTree = (data) => {
-  const type = Type.infer(data)
-  // @ts-expect-error
-  return type.toTree(data, toTree)
-}
+const sha256Builder = Tree.createBuilder(sha256)
 
 /**
  * @param {unknown} value
- * @param {Tree.Hash} [hash]
+ * @param {Tree.Builder} builder
  * @returns {string}
  */
-export const id = (value, hash = sha256) =>
-  Reference.base32.encode(Tree.digest(toTree(value), hash))
+export const id = (value, builder = sha256Builder) =>
+  Reference.base32.encode(builder.digest(builder.toTree(value)))
 
 /**
  *
  * @param {unknown} value
- * @param {Tree.Hash} hash
- * @returns
+ * @param {Tree.Builder} builder
  */
-export const refer = (value, hash = sha256) =>
-  Reference.fromDigest(Tree.digest(toTree(value), hash))
+export const refer = (value, builder = sha256Builder) =>
+  Reference.fromDigest(builder.digest(builder.toTree(value)))
 
 const MARKER = Symbol('Marker')
 
