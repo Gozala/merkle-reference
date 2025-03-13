@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.1.0](https://github.com/Gozala/merkle-reference/compare/v2.0.1...v2.1.0) (2025-03-12)
+
+
+### Features
+
+* implement caching ([39db10e](https://github.com/Gozala/merkle-reference/commit/39db10e156ce7c2e5210b99247a5cf12e43185eb))
+* implement caching ([#12](https://github.com/Gozala/merkle-reference/issues/12)) ([084f036](https://github.com/Gozala/merkle-reference/commit/084f036a2fbb660e524e73caf753249916acc63c))
+
 ## [2.0.1](https://github.com/Gozala/merkle-reference/compare/v2.0.0...v2.0.1) (2025-01-26)
 
 
