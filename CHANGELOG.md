@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0](https://github.com/Gozala/merkle-reference/compare/v2.1.0...v2.2.0) (2025-04-11)
+
+
+### Features
+
+* create a user guide ([5b89b6b](https://github.com/Gozala/merkle-reference/commit/5b89b6b5ca266983b7b5cc67acfec26716ccc610))
+
 ## [2.1.0](https://github.com/Gozala/merkle-reference/compare/v2.0.1...v2.1.0) (2025-03-12)
 
 
