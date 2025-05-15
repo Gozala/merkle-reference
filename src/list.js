@@ -9,7 +9,7 @@ export const tag = Tag.for('merkle-structure:list/item/ref-tree')
  */
 export const toTree = (data, builder) => {
   const members = []
-  for (const element of data) {
+  for (const [, element] of builder.entries(data)) {
     members.push(builder.toTree(element))
   }
 

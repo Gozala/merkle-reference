@@ -106,6 +106,11 @@ class Reference {
 }
 
 /**
+ * @template [T=unknown]
+ * @typedef {Reference<T>} View
+ */
+
+/**
  * @template {{} | null} T
  * @param {unknown|import('./lib.js').Reference<T>} source
  * @returns {source is import('./lib.js').Reference<T>}
@@ -215,3 +220,5 @@ export const toJSON = (reference) => ({ '/': base32.encode(reference['/']) })
  */
 export const fromJSON = (json) =>
   fromBytes(base32.decode(json['/']).subarray(1))
+
+const MARKER = Symbol('Marker')

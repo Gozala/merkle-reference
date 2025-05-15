@@ -5,7 +5,95 @@ import * as Null from './null.js'
 import * as Reference from './reference.js'
 import * as Type from './type.js'
 
+import { base32 } from './reference.js'
+
 export { sha256 }
+
+export class StrictTraversal {
+  /**
+   * @param {object} source
+   * @returns {Iterable<[string, unknown]|[number, unknown]>}
+   */
+  static *entries(source) {
+    if (source instanceof Map) {
+      yield* source.entries()
+    } else if (source instanceof Set) {
+      for (const value of source.values()) {
+        yield [value, true]
+      }
+    } else if (Array.isArray(source)) {
+      yield* source.entries()
+    } else {
+      yield* Object.entries(source)
+    }
+  }
+}
+
+/**
+ * @param {unknown} value
+ */
+const toJSON = (value) => {
+  switch (value) {
+    case Infinity:
+    case -Infinity:
+      return undefined
+    default: {
+      switch (typeof value) {
+        case 'function':
+        case 'undefined':
+        case 'symbol':
+          return undefined
+        case 'number':
+          return isNaN(/** @type {number} */ (value)) ? undefined : value
+        case 'object': {
+          if (
+            typeof (/** @type {{toJSON?:unknown}} */ (value)?.toJSON) ==
+            'function'
+          ) {
+            return /** @type {{toJSON?:unknown}} */ (value).toJSON()
+          } else if (value instanceof String) {
+            return `${value}`
+          } else if (value instanceof Boolean) {
+            return value.valueOf()
+          } else if (value instanceof Number) {
+            return toJSON(value.valueOf())
+          } else {
+            return value
+          }
+        }
+        default: {
+          return value
+        }
+      }
+    }
+  }
+}
+
+export class JSONTraversal {
+  /**
+   * @param {{toJSON?: unknown}} source
+   * @returns {Iterable<[string, unknown]|[number, unknown]>}
+   */
+  static *entries(source) {
+    const object = toJSON(source)
+
+    if (Array.isArray(object)) {
+      // If it is an array we substitute non-json members with null to match
+      // what JSON.stringify does there.
+      for (const [at, value] of object.entries()) {
+        const json = toJSON(value)
+        yield [at, json === undefined ? null : json]
+      }
+    } else {
+      for (const [at, value] of StrictTraversal.entries(object)) {
+        const json = toJSON(value)
+        if (json !== undefined) {
+          yield [/** @type {string} */ (at), json]
+        }
+      }
+    }
+  }
+}
 
 /**
  * @typedef {Uint8Array} Leaf
@@ -15,19 +103,42 @@ export { sha256 }
  *
  * @typedef {object} Builder
  * @property {(source: unknown) => Node} toTree
+ * @property {(source: object) => Iterable<[string|number, unknown]>} entries
  * @property {(node: Node) => Uint8Array} digest
+ * @property {<T>(sounce: T) => Reference.View<T>} refer
+ * @property {(source: unknown) => string} id
  */
 
 class TreeBuilder {
   /**
    * @param {Hash} hash
+   * @param {Builder['entries']} entries
    * @param {WeakMap<object, Node>} nodes
    * @param {WeakMap<Node, Uint8Array>} digests
    */
-  constructor(hash, nodes = new WeakMap(), digests = new WeakMap()) {
+  constructor(
+    hash,
+    entries = StrictTraversal.entries,
+    nodes = new WeakMap(),
+    digests = new WeakMap()
+  ) {
     this.hash = hash
+    this.entries = entries
     this.nodes = nodes
     this.digests = digests
+  }
+
+  /**
+   * @param {unknown} source
+   */
+  id(source) {
+    return base32.encode(this.digest(this.toTree(source)))
+  }
+  /**
+   * @param {unknown} source
+   */
+  refer(source) {
+    return Reference.fromDigest(this.digest(this.toTree(source)))
   }
 
   /**
@@ -113,5 +224,6 @@ class TreeBuilder {
 
 /**
  * @param {Hash} hash
+ * @param {Builder['entries']} [entries]
  */
-export const createBuilder = (hash) => new TreeBuilder(hash)
+export const createBuilder = (hash, entries) => new TreeBuilder(hash, entries)

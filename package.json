@@ -28,6 +28,11 @@
       "types": "./dist/src/lib.d.ts",
       "import": "./src/lib.js",
       "default": "./src/lib.js"
+    },
+    "./json": {
+      "types": "./dist/src/json.d.ts",
+      "import": "./src/json.js",
+      "default": "./src/json.js"
     }
   },
   "dependencies": {
@@ -35,8 +40,8 @@
     "multiformats": "^13.0.0"
   },
   "devDependencies": {
+    "entail": "3.0.1",
     "c8": "^9.1.0",
-    "entail": "^2.1.2",
     "playwright-test": "^14.1.1",
     "prettier": "^3.2.5",
     "typescript": "^5.7.3"

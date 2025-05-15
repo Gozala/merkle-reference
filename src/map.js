@@ -8,26 +8,11 @@ export const tag = Tag.for('merkle-structure:map/k+v/ref-tree')
 
 /**
  * @param {object} data
- */
-export function* entries(data) {
-  if (data instanceof Map) {
-    yield* data.entries()
-  } else if (data instanceof Set) {
-    for (const value of data.values()) {
-      yield [value, true]
-    }
-  } else {
-    yield* Object.entries(data)
-  }
-}
-
-/**
- * @param {object} data
  * @param {Tree.Builder} builder
  */
 export const attributes = (data, builder) => {
   const attributes = []
-  for (const [name, value] of entries(data)) {
+  for (const [name, value] of builder.entries(data)) {
     const key = builder.toTree(name)
     const order =
       typeof name === 'string' ? String.toUTF8(name) : builder.digest(key)
