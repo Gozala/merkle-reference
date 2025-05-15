@@ -11,9 +11,6 @@ importers:
       '@noble/hashes':
         specifier: 1.3.3
         version: 1.3.3
-      entail:
-        specifier: 3.0.1
-        version: 3.0.1
       multiformats:
         specifier: ^13.0.0
         version: 13.1.0
@@ -21,6 +18,9 @@ importers:
       c8:
         specifier: ^9.1.0
         version: 9.1.0
+      entail:
+        specifier: 3.0.1
+        version: 3.0.1
       playwright-test:
         specifier: ^14.1.1
         version: 14.1.1
