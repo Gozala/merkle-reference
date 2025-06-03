@@ -1,18 +1,19 @@
 import * as Tag from './tag.js'
 import { compare } from './bytes.js'
 import * as String from './string.js'
-import * as Tree from './tree.js'
 
 export const name = 'Map'
 export const tag = Tag.for('merkle-structure:map/k+v/ref-tree')
 
 /**
- * @param {object} data
- * @param {Tree.Builder} builder
+ * @param {Iterable<[unknown, unknown]>} entries
+ * @param {import('./tree.js').Builder} builder
+ * @return {import('./tree.js').Branch}
  */
-export const attributes = (data, builder) => {
+export const attributes = (entries, builder) => {
   const attributes = []
-  for (const [name, value] of builder.entries(data)) {
+
+  for (const [name, value] of entries) {
     const key = builder.toTree(name)
     const order =
       typeof name === 'string' ? String.toUTF8(name) : builder.digest(key)
@@ -29,9 +30,23 @@ export const attributes = (data, builder) => {
 }
 
 /**
- * @param {Map<unknown, unknown>} data
- * @param {Tree.Builder} builder
+ *
+ * @param {Iterable<[unknown, unknown]>} entries
+ * @param {import('./tree.js').Builder} builder
  */
-export const toTree = (data, builder) => {
-  return [tag, attributes(data, builder)]
-}
+export const from = (entries, builder) => [tag, attributes(entries, builder)]
+
+/**
+ * @param {object} data
+ * @param {import('./tree.js').Builder} builder
+ * @return {import('./tree.js').Branch}
+ */
+export const toTree = (data, builder) =>
+  from(
+    data instanceof Map
+      ? data.entries()
+      : data instanceof Set
+        ? [...data].map((value) => [value, true])
+        : Object.entries(data),
+    builder
+  )

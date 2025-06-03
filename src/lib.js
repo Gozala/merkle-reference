@@ -3,8 +3,7 @@ import * as Tree from './tree.js'
 import * as json from './json.js'
 
 const sha256Builder = Tree.createBuilder(
-  Tree.sha256,
-  Tree.StrictTraversal.entries
+  Tree.sha256
 )
 
 export const id = Object.assign(

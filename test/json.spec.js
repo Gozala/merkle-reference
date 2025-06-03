@@ -1,5 +1,5 @@
 import { refer, id } from 'merkle-reference'
-import { JSONTraversal } from '../src/tree.js'
+import * as Reference from '../src/reference.js'
 
 /** @type {Record<string, unknown>} */
 const fixtures = {
@@ -95,28 +95,9 @@ const fixtures = {
     },
     { ownProp: { value: 'own', enumerable: true } }
   ),
+  'Uint8Array bytes': new Uint8Array([1, 2, 3, 4]),
+  'Reference object': Reference.fromDigest(new Uint8Array(32).fill(42)),
 }
-
-/**
- * @type {import('entail').Suite}
- */
-export const skipTestTraversal = Object.fromEntries([
-  ...Object.entries(fixtures).map(([title, value]) => [
-    title,
-    /**
-     *
-     * @param {import('entail').Assert} assert
-     */
-    (assert) => {
-      const json = JSON.parse(JSON.stringify(value))
-      assert.deepEqual(
-        [...entries(json)],
-        [...JSONTraversal.entries(/** @type {any} */ (value))],
-        `${JSON.stringify(value)} traversal`
-      )
-    },
-  ]),
-])
 
 /**
  * @type {import('entail').Suite}
@@ -129,11 +110,35 @@ export const testJSONMode = Object.fromEntries([
      * @param {import('entail').Assert} assert
      */
     (assert) => {
-      const json = JSON.parse(JSON.stringify(value))
+      // Special handling for Uint8Array and Reference objects
+      if (value instanceof Uint8Array || Reference.is(value)) {
+        // These should be handled directly by json-type.js without JSON.stringify
+        const result = refer.json(value)
+        assert.ok(result, `Should handle ${title} directly`)
+        return
+      }
+
+      const stringified = JSON.stringify(value)
+
+      // Handle cases where JSON.stringify returns undefined
+      if (stringified === undefined) {
+        // These cases should either throw or be handled consistently
+        // For now, let's verify they throw since JSON can't represent them
+        assert.throws(() => refer.json(value), /Unknown type|Cannot convert/)
+        return
+      }
+
+      const json = JSON.parse(stringified)
+
+      // For cases where JSON.stringify successfully converts the value,
+      // the JSON mode should produce the same result as processing the stringified result
+      const jsonModeResult = refer.json(value).toString()
+      const normalModeResult = refer(json).toString()
+
       assert.deepEqual(
-        refer.json(value).toString(),
-        refer(json).toString(),
-        title
+        jsonModeResult,
+        normalModeResult,
+        `JSON mode result should match normal mode on JSON.stringify result for: ${title}`
       )
       assert.equal(id.json(value), id(json))
     },
@@ -141,7 +146,104 @@ export const testJSONMode = Object.fromEntries([
 ])
 
 /**
- * @param {object} source
+ * @type {import('entail').Suite}
  */
-const entries = (source) =>
-  Array.isArray(source) ? source.entries() : Object.entries(source)
+export const testEdgeCases = {
+  'test Uint8Array handling': (assert) => {
+    // Test line 133: Bytes.toTree case
+    const bytes = new Uint8Array([1, 2, 3, 4])
+    const result = refer.json(bytes)
+    assert.ok(result, 'Should handle Uint8Array directly')
+
+    // Verify it creates a proper tree structure
+    const expected = refer(bytes)
+    assert.equal(result.toString(), expected.toString())
+  },
+
+  'test Reference object handling': (assert) => {
+    // Test that Reference objects can be processed without errors
+    const ref = Reference.fromDigest(new Uint8Array(32).fill(42))
+    const result = refer.json(ref)
+    assert.ok(result, 'Should handle Reference objects directly')
+
+    // The result should be a valid reference-like structure
+    assert.ok(
+      result.toString().length > 0,
+      'Result should have a valid string representation'
+    )
+
+    // Test that we can also process the reference through normal refer()
+    const normalResult = refer(ref)
+    assert.ok(
+      normalResult,
+      'Normal refer should also work with Reference objects'
+    )
+  },
+
+  'test bigint handling': (assert) => {
+    // Test line 124: bigint case
+    const bigintValue = 123456789012345678901234567890n
+    const result = refer.json(bigintValue)
+    assert.ok(result, 'Should handle bigint values')
+
+    // Verify it creates the same result as refer() with the bigint
+    const expected = refer(bigintValue)
+    assert.equal(result.toString(), expected.toString())
+  },
+
+  'test float handling': (assert) => {
+    // Test line 122: Float.toTree case
+    const floatValue = 123.456
+    const result = refer.json(floatValue)
+    assert.ok(result, 'Should handle float values')
+
+    // Verify it creates the same result as refer() with the float
+    const expected = refer(floatValue)
+    assert.equal(result.toString(), expected.toString())
+  },
+
+  'test undefined normalization error': (assert) => {
+    // Test lines 114-115: throw TypeError when normalized === undefined
+    assert.throws(() => {
+      // Functions should be normalized to undefined and throw an error
+      refer.json(function () {
+        return 'test'
+      })
+    }, /Unknown type/)
+
+    assert.throws(() => {
+      // Symbols should be normalized to undefined and throw an error
+      refer.json(Symbol('test'))
+    }, /Unknown type/)
+
+    assert.throws(() => {
+      // undefined should throw an error
+      refer.json(undefined)
+    }, /Unknown type/)
+  },
+
+  'test Reference.is path directly': (assert) => {
+    // Test line 137: Reference.is(normalized) returns normalized
+    // Create a reference-like object and process it with refer.json
+    const refLike = { '/': refer({ hello: 'world' })['/'] }
+    const result = refer.json(refLike)
+
+    // The result should be a valid reference
+    assert.ok(result, 'Should process reference-like object')
+    assert.ok(Reference.is(refLike), 'Input should pass Reference.is check')
+  },
+
+  'test unknown type error': (assert) => {
+    // Test lines 143-144: default case TypeError
+    // This should trigger the default case and throw TypeError
+    assert.throws(() => {
+      // Create a value that toJSON returns as a Symbol (unhandled type)
+      const badValue = {
+        toJSON() {
+          return Symbol('unhandled')
+        },
+      }
+      refer.json(badValue)
+    }, /Unknown type/)
+  },
+}

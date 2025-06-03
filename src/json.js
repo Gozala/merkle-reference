@@ -1,10 +1,8 @@
 export * from './exports.js'
 import * as Tree from './tree.js'
+import * as NodeBuilder from './json/value.js'
 
-const sha256Builder = Tree.createBuilder(
-  Tree.sha256,
-  Tree.JSONTraversal.entries
-)
+const sha256Builder = Tree.createBuilder(Tree.sha256, NodeBuilder)
 
 /**
  * @param {unknown} value

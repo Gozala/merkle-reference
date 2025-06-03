@@ -12,5 +12,6 @@ export const toBytes = (value) => (value ? True : False)
 
 /**
  * @param {boolean} value
+ * @return {import('./tree.js').Branch}
  */
 export const toTree = (value) => [tag, toBytes(value)]

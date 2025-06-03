@@ -15,5 +15,6 @@ export const toBytes = toUTF8
 
 /**
  * @param {string} value
+ * @return {import('./tree.js').Branch}
  */
 export const toTree = (value) => [tag, toBytes(value)]
