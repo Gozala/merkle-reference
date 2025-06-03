@@ -32,5 +32,6 @@ export const leb128 = (value) => {
 
 /**
  * @param {bigint|number} value
+ * @return {import('./tree.js').Branch}
  */
 export const toTree = (value) => [tag, toBytes(value)]

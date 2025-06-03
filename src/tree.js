@@ -3,7 +3,9 @@ import * as Tag from './tag.js'
 import * as Bytes from './bytes.js'
 import * as Null from './null.js'
 import * as Reference from './reference.js'
-import * as Type from './type.js'
+import * as Value from './value.js'
+
+import { base32 } from './reference.js'
 
 export { sha256 }
 
@@ -13,21 +15,46 @@ export { sha256 }
  * @typedef {symbol|Branch} Node
  * @typedef {(payload: Uint8Array) => Uint8Array} Hash
  *
+ * @typedef {object} NodeBuilder
+ * @property {(source: unknown, builder: TreeBuilder) => Node|import('./lib.js').Reference} toTree
+ *
  * @typedef {object} Builder
  * @property {(source: unknown) => Node} toTree
  * @property {(node: Node) => Uint8Array} digest
+ * @property {<T>(sounce: T) => Reference.View<T>} refer
+ * @property {(source: unknown) => string} id
  */
 
 class TreeBuilder {
   /**
    * @param {Hash} hash
+   * @param {NodeBuilder} nodeBuilder
    * @param {WeakMap<object, Node>} nodes
    * @param {WeakMap<Node, Uint8Array>} digests
    */
-  constructor(hash, nodes = new WeakMap(), digests = new WeakMap()) {
+  constructor(
+    hash,
+    nodeBuilder,
+    nodes = new WeakMap(),
+    digests = new WeakMap()
+  ) {
     this.hash = hash
+    this.nodeBuilder = nodeBuilder
     this.nodes = nodes
     this.digests = digests
+  }
+
+  /**
+   * @param {unknown} source
+   */
+  id(source) {
+    return base32.encode(this.digest(this.toTree(source)))
+  }
+  /**
+   * @param {unknown} source
+   */
+  refer(source) {
+    return Reference.fromDigest(this.digest(this.toTree(source)))
   }
 
   /**
@@ -38,14 +65,13 @@ class TreeBuilder {
   toTree(source) {
     let node = this.nodes.get(/** @type {object} */ (source))
     if (!node) {
-      const type = Type.infer(source)
-      // @ts-expect-error
-      node = /** @type {Node} */ (type.toTree(source, this))
+      node = /** @type {Node} */ (this.nodeBuilder.toTree(source, this))
 
       if (source && typeof source === 'object') {
         this.nodes.set(/** @type {object} */ (source), node)
       }
     }
+
     return node
   }
 
@@ -113,5 +139,7 @@ class TreeBuilder {
 
 /**
  * @param {Hash} hash
+ * @param {NodeBuilder} nodeBuilder
  */
-export const createBuilder = (hash) => new TreeBuilder(hash)
+export const createBuilder = (hash, nodeBuilder = Value) =>
+  new TreeBuilder(hash, nodeBuilder)

@@ -21,5 +21,6 @@ export const doublePrecisionFloat = (value) => {
 
 /**
  * @param {number} value
+ * @return {import('./tree.js').Branch}
  */
 export const toTree = (value) => [tag, toBytes(value)]

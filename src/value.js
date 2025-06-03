@@ -10,28 +10,30 @@ import * as Reference from './reference.js'
 
 /**
  * @param {unknown} data
+ * @param {import('./tree.js').Builder} builder
+ * @returns {import('./tree.js').Branch|import('./lib.js').Reference}
  */
-export const infer = (data) => {
+export const toTree = (data, builder) => {
   switch (typeof data) {
     case 'number':
-      return Number.isInteger(data) ? Integer : Float
+      return Number.isInteger(data) ? Integer.toTree(data) : Float.toTree(data)
     case 'bigint':
-      return Integer
+      return Integer.toTree(data)
     case 'boolean':
-      return Boolean
+      return Boolean.toTree(data)
     case 'string':
-      return String
+      return String.toTree(data)
     case 'object': {
       if (data === null) {
-        return Null
+        return Null.toTree(data)
       } else if (Bytes.is(data)) {
-        return Bytes
+        return Bytes.toTree(data)
       } else if (Array.isArray(data)) {
-        return List
+        return List.toTree(data, builder)
       } else if (Reference.is(data)) {
-        return Reference
+        return Reference.toTree(data)
       } else {
-        return Map
+        return Map.toTree(data, builder)
       }
     }
     default: {
