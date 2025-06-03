@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.2.0](https://github.com/Gozala/merkle-reference/compare/v2.1.0...v2.2.0) (2025-06-03)
+
+
+### Features
+
+* add json mode ([2d0160f](https://github.com/Gozala/merkle-reference/commit/2d0160f10dd3bfeaae384a576484dc02859d9f70))
+* add json mode ([#18](https://github.com/Gozala/merkle-reference/issues/18)) ([5f90e2f](https://github.com/Gozala/merkle-reference/commit/5f90e2f2aa5ff9fb6805813cc37c4cdb125513b9))
+* create a user guide ([5b89b6b](https://github.com/Gozala/merkle-reference/commit/5b89b6b5ca266983b7b5cc67acfec26716ccc610))
+* create a user guide ([#17](https://github.com/Gozala/merkle-reference/issues/17)) ([eba4bb5](https://github.com/Gozala/merkle-reference/commit/eba4bb5812d7e4e23e4c50f32cda118b5cf35d4c))
+
+
+### Bug Fixes
+
+* support for toJSON that returns non object ([bb17976](https://github.com/Gozala/merkle-reference/commit/bb17976c091d281ab9c06f17b2d952eeeef05697))
+
 ## [2.1.0](https://github.com/Gozala/merkle-reference/compare/v2.0.1...v2.1.0) (2025-03-12)
 
 
